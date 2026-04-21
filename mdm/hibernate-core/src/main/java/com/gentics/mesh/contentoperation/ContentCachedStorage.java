@@ -33,6 +33,7 @@ import com.gentics.mesh.core.endpoint.admin.debuginfo.DebugInfoEntry;
 import com.gentics.mesh.core.endpoint.admin.debuginfo.DebugInfoProvider;
 import com.gentics.mesh.core.endpoint.admin.debuginfo.DebugInfoUtil;
 import com.gentics.mesh.core.rest.common.FieldTypes;
+import com.gentics.mesh.core.rest.node.field.JsonContent;
 import com.gentics.mesh.core.rest.schema.FieldSchema;
 import com.gentics.mesh.database.HibernateDatabase;
 import com.gentics.mesh.etc.config.ConfigUtils;
@@ -52,7 +53,6 @@ import com.hazelcast.topic.ITopic;
 import dagger.Lazy;
 import io.micrometer.core.instrument.binder.cache.CaffeineCacheMetrics;
 import io.reactivex.Flowable;
-import io.vertx.core.json.JsonObject;
 
 /**
  * Implements a cached data storage for content. When running in standalone mode, the cache is backed by caffeine.
@@ -322,7 +322,7 @@ public class ContentCachedStorage implements DebugInfoProvider {
 		case JSON:
 			HibJsonField jValue = container.getJson(field.getName());
 			if (jValue != null) {
-				JsonObject json = jValue.getJson();
+				JsonContent json = jValue.getJson();
 				if (json != null) {
 					return StringScale.getWeight(JsonUtil.toJson(json, true));
 				}
