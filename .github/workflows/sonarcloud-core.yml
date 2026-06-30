@@ -32,11 +32,16 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn -B -pl :mesh-core -am \
-            -DskipTests \
-            -Dskip.unit.tests \
+            -DskipTests=false \
+            -Dskip.unit.tests=false \
             -Dskip.performance.tests \
             -Dskip.cluster.tests \
-            package sonar:sonar \
+            -Djacoco.skip=false \
+            -Djacoco.version=0.8.11 \
+            -Djacoco.propertyName=argLine \
+            -Djacoco.destFile=target/jacoco.exec \
+            -Djacoco.dataFile=target/jacoco.exec \
+            org.jacoco:jacoco-maven-plugin:0.8.11:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.11:report sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=amandesi13 \
             -Dsonar.projectKey=amandesi13_mesh \
@@ -44,5 +49,6 @@ jobs:
             -Dsonar.token="${SONAR_TOKEN}" \
             -Dsonar.inclusions=core/src/main/java/**/*.java \
             -Dsonar.exclusions=**/test/**,**/tests/**,**/target/**,**/*Test.java \
+            -Dsonar.coverage.jacoco.xmlReportPaths=core/target/site/jacoco/jacoco.xml \
             -Dsonar.cpd.exclusions=**/* \
             -Dsonar.scm.disabled=true
