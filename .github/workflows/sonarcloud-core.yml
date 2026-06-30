@@ -27,9 +27,7 @@ jobs:
           java-version: 17
           cache: maven
 
-      - name: Analyze Gentics Mesh core with SonarCloud
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Test Gentics Mesh core with JaCoCo
         run: |
           mvn -B -pl :mesh-core -am \
             -DskipTests=false \
@@ -41,14 +39,24 @@ jobs:
             -Djacoco.propertyName=argLine \
             -Djacoco.destFile=target/jacoco.exec \
             -Djacoco.dataFile=target/jacoco.exec \
-            org.jacoco:jacoco-maven-plugin:0.8.11:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.11:report sonar:sonar \
+            org.jacoco:jacoco-maven-plugin:0.8.11:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.11:report
+
+      - name: Analyze Gentics Mesh core with SonarCloud
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn -B -f core/pom.xml sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=amandesi13 \
             -Dsonar.projectKey=amandesi13_mesh \
             -Dsonar.projectName="Gentics Mesh Core - FPSS Task 3" \
             -Dsonar.token="${SONAR_TOKEN}" \
-            -Dsonar.inclusions=core/src/main/java/**/*.java \
+            -Dsonar.sources=src/main/java \
+            -Dsonar.tests=src/test/java \
+            -Dsonar.java.binaries=target/classes \
+            -Dsonar.junit.reportPaths=target/surefire-reports \
+            -Dsonar.inclusions=src/main/java/**/*.java \
             -Dsonar.exclusions=**/test/**,**/tests/**,**/target/**,**/*Test.java \
-            -Dsonar.coverage.jacoco.xmlReportPaths=core/target/site/jacoco/jacoco.xml \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -Dsonar.cpd.exclusions=**/* \
             -Dsonar.scm.disabled=true
