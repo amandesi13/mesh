@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - dev
+      - master
     paths:
       - "core/src/main/java/**"
       - "pom.xml"
