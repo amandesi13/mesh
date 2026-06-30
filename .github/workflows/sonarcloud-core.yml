@@ -28,16 +28,21 @@ jobs:
           cache: maven
 
       - name: Analyze Gentics Mesh core with SonarCloud
-        working-directory: core
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn -B sonar:sonar \
+          mvn -B -pl :mesh-core -am \
+            -DskipTests \
+            -Dskip.unit.tests \
+            -Dskip.performance.tests \
+            -Dskip.cluster.tests \
+            package sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.organization=amandesi13 \
             -Dsonar.projectKey=amandesi13_mesh \
             -Dsonar.projectName="Gentics Mesh Core - FPSS Task 3" \
-            -Dsonar.sources=src/main/java \
+            -Dsonar.token="${SONAR_TOKEN}" \
+            -Dsonar.inclusions=core/src/main/java/**/*.java \
             -Dsonar.exclusions=**/test/**,**/tests/**,**/target/**,**/*Test.java \
             -Dsonar.cpd.exclusions=**/* \
             -Dsonar.scm.disabled=true
