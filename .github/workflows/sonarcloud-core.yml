@@ -29,7 +29,7 @@ jobs:
 
       - name: Test Gentics Mesh core with JaCoCo
         run: |
-          mvn -B -pl :mesh-core -am \
+          mvn -B -pl :mesh-bom,:mesh-core -am \
             -DskipTests=false \
             -Dskip.unit.tests=false \
             -Dskip.performance.tests \
@@ -39,7 +39,7 @@ jobs:
             -Djacoco.propertyName=argLine \
             -Djacoco.destFile=target/jacoco.exec \
             -Djacoco.dataFile=target/jacoco.exec \
-            org.jacoco:jacoco-maven-plugin:0.8.11:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.11:report
+            org.jacoco:jacoco-maven-plugin:0.8.11:prepare-agent install org.jacoco:jacoco-maven-plugin:0.8.11:report
 
       - name: Analyze Gentics Mesh core with SonarCloud
         env:
